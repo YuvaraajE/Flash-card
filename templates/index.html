@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/static/styles/index.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Dashboard</title>
+
+</head>
+<body>
+    <!----------------------------------------- Navigation bar ---------------------------------------------------->
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e4e4e4;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Dashboard</a>
+            <span class="navbar-text">
+                Welcome back, {{user.username}}
+            </span>
+            <button type="button" class="btn btn-outline-danger" onclick="location.href='/logout';">logout</button>
+        </div>
+    </nav>
+    
+    <!--------------------------------------------- Error messages ---------------------------------------------------->
+    {% for message in get_flashed_messages() %}
+        {% if message != "Please log in to access this page." %}
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="p-3">
+        <h2 class="d-inline font-weight-normal h1">Your Decks</h2>
+        <button class="btn btn-secondary float-right m-2" data-toggle="modal" data-target="#addCardModal">Add Card</button>
+        <button class="btn btn btn-dark float-right m-2" data-toggle="modal" data-target="#addDeckModal">Add Deck</button>
+    </div>
+
+                            <!-- ----------------------------Bootstrap Modals----------------------------------------- -->
+
+    <!------------------------------------------------- Add deck Modal - Create Deck Form ---------------------------------------------------------------->
+    <div class="modal fade" id="addDeckModal" tabindex="-1" role="dialog" aria-labelledby="addDeckModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDeckModalLabel">Create a new deck</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-danger">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/add" method="post" id="add_deck">
+                        <div class="form-group">
+                            <label for="deck_name">Name</label>
+                            <input type="text" id ="deck_name" name="deck_name" class="form-control" placeholder="Enter deck name" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="add_deck" class="btn btn-success">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <!------------------------------------------------- Add Card Modal - Add Card Form ---------------------------------------------------------------->
+    <div class="modal fade" id="addCardModal" tabindex="-1" role="dialog" aria-labelledby="addCardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCardModalLabel">Add a new card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-danger">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/add_card" method="post" id="add_card">
+                        <div class="form-group">
+                            <label for="deck_name">Choose a Deck</label>
+                            <select id="deck_name" name="deck_name" class="form-control">
+                                {% for deck in decks %}
+                                    <option value="{{deck.deck_id}}">{{deck.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="card_front">Question</label>
+                            <input type="text" class="form-control" id="card_front" name="card_front" placeholder="Enter question" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="card_back">Answer</label>
+                            <input type="text" class="form-control" id="card_back" name="card_back" placeholder="Enter answer" required>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button form="add_card" class="btn btn-success">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!------------------------------------------ User's Decks --------------------------------------->
+    {% if decks %}
+        {% for deck in decks %}
+            <div class="card m-3">
+                <h4 class="card-header">{{deck.name}}</h4>
+                <div class="card-body">
+                <h5 class="card-text font-weight-normal">No. of cards - {{cards[deck]}} </h5> 
+                {% if not deck.score %}
+                <h5 class="card-text font-weight-normal">Remark - <span id='score_n'>None</span></h5>
+                {% elif deck.score >= 1 and deck.score <= 2 %}
+                <h5 class="card-text font-weight-normal">Remark - <span id='score_g'>Good</span></h5>
+                {% elif deck.score >= 3 and deck.score <= 4 %}
+                <h5 class="card-text font-weight-normal" >Remark - <span id='score_a'>Average</span></h5>
+                {% else %}
+                <h5 class="card-text font-weight-normal">Remark - <span id='score_b'>Bad</span></h5>
+                {% endif %}
+                {% if deck.last_reviewed %}
+                    <h5 class="card-text font-weight-normal">Last reviewed - {{deck.last_reviewed.strftime('%Y-%m-%d')}} </h5> 
+                {% else %}
+                <h5 class="card-texte font-weight-normal">Last reviewed - {{deck.last_reviewed}} </h5> 
+                {% endif %}
+                <a href="/review/{{deck.deck_id}}" class="btn btn-outline-success mr-2">Review</a>
+                <a href="/edit/{{deck.deck_id}}" class="btn btn-outline-dark mr-2">Edit</a>
+                <a href="/delete/{{deck.deck_id}}" class="btn btn-outline-danger">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+    <div class="d-flex m-5 justify-content-center">
+        <p class="text-dark display-4">No deck is found, add a new one!</p>
+    </div>
+    {% endif %}
+</body>
+</html>

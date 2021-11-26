@@ -1,0 +1,17 @@
+#review-card:hover {
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+#score_n {
+    color: grey;
+}
+#score_g {
+    color: rgb(0, 212, 0);
+}
+#score_a {
+    color: black;
+}
+#score_b {
+    color: rgb(255, 0, 0);
+}

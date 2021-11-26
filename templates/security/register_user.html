@@ -1,0 +1,40 @@
+{% extends "security/base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-items-center">
+    <div class="container w-50 p-3 my-3 bg-dark text-white border border-dark rounded">
+    <h1 class="p-4 text-center">{{ _('Sign Up') }}</h1>
+    <div class="d-flex p-2 justify-content-center">  
+      <form action="{{ url_for_security('register') }}" method="POST" name="register_user_form" id="register_form">
+        <div class="form-group">
+          {{ register_user_form.hidden_tag() }}
+        </div>
+        <div class="form-group">  
+          <label>Email</label>
+          {{register_user_form.email(class="form-control", placeholder="Enter email") }} 
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          {{register_user_form.username(class="form-control", placeholder="Enter username")}}
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          {{ register_user_form.password(class="form-control", placeholder="Enter password") }}
+        </div>
+        <div class="form-group">
+          {% if register_user_form.password_confirm %}
+          <label>Confirm Password</label>
+          {{ register_user_form.password_confirm(class="form-control", placeholder="Confirm password") }}
+        {% endif %}
+        </div>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-light" form="register_form">SIGNUP</button>
+      </div>
+    </form>
+    <div>
+      <p class="mb-0 pt-3 text-center pt-5">Already have an account? <a href="/login" class="text-white-50 fw-bold">Login</a></p>
+    </div>
+  </div>
+{% endblock %}

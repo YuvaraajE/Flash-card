@@ -1,0 +1,29 @@
+{% extends "security/base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-items-center">
+  <div class="container w-50 p-3 my-3 bg-dark text-white border border-dark rounded">
+    <h1 class="p-4 text-center">{{ _('Login') }}</h1>
+    <div class="d-flex p-2 justify-content-center">
+      <form action="{{ url_for_security('login') }}" method="POST" name="login_user_form" id="login_form">
+          {{ login_user_form.hidden_tag() }}
+          <div class="form-group">
+            <label>Email</label>
+            {{ login_user_form.email(class="form-control", placeholder="Enter email") }}
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            {{ login_user_form.password(class="form-control", placeholder="Enter password") }}
+          </div>
+      </form>
+    </div>   
+    <div class="text-center">
+      <button class="btn btn-light" form="login_form">LOGIN</button>
+    </div>
+    <div>
+      <p class="mb-0 pt-3 text-center pt-5">Don't have an account? <a href="/register" class="text-white-50 fw-bold">Sign Up</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

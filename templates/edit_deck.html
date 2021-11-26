@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <title>Edit Deck</title>
+    </head>
+    <body>
+
+        <!----------------------------------------- Navigation bar ---------------------------------------------------->
+        <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e4e4e4;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Dashboard</a>
+                <button type="button" class="btn btn-outline-danger" onclick="location.href='/logout';">logout</button>
+            </div>
+        </nav>
+
+        <!--------------------------------------------- Error messages ---------------------------------------------------->
+        {% for message in get_flashed_messages() %}
+            {% if message != "Please log in to access this page." %}
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <!--------------------------------------------- All Cards in the deck ------------------------------------------>
+        <h2 class="m-3"><span class="font-weight-light font-italic">{{deck.name}}</span> - Cards</h2>
+        {% if cards %}
+        <div class="m-3">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">S.no</th>
+                        <th scope="col">Front</th>
+                        <th scope="col">Back</th>
+                        <th scope="col">Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for card in cards %}
+                    <tr>
+                        <th scope="row">{{loop.index}}</td>
+                        <td>{{card.front}}</td>
+                        <td>{{card.back}}</td>
+                        <td><button type ="button" class="btn btn-outline-dark mr-2" data-toggle="modal" data-target="#editCardModal" data-card_id = "{{card.card_id}}" data-front = "{{card.front}}" data-back = "{{card.back}}">Edit</button> 
+                            <a href="/delete_card/{{card.card_id}}" class="btn btn-outline-danger">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="m-3">No cards found in this deck, go to <a class = "text-danger" href="/">dashboard</a> to add one.</p>
+        {% endif %}
+
+        <!------------------------------------------------- Bootstrap Modal - Edit Card Form ---------------------------------------------->
+        <div class="modal fade" id="editCardModal" tabindex="-1" role="dialog" aria-labelledby="editCardModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editCardModalLabel">Edit a card</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-danger">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Deck - <span class="font-weight-bold font-italic">{{deck.name}}</span></p>
+                        <form action="" method="post" id="edit_card">
+                            <div class="form-group"> 
+                                <label for="front">Front</label>
+                                <input type="text" id="front" name="front" value="" class="form-control" required> 
+                            </div>
+                            <div>
+                                <label for="back">Back</label>
+                                <input type="text" id="back" name="back" value="" class="form-control" required>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button form="edit_card" class="btn btn-success">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!---------------------------- Script to genarate specific data in the bootstrap modal for selected card ------------------------------------->
+    <script>
+        // To set value for model from selected button
+        $('#editCardModal').on('show.bs.modal',function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var card_id = button.data('card_id') // Extract info from data-* attributes
+            var front = button.data('front')
+            var back = button.data('back')
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('#front').val(front)
+            modal.find('#back').val(back)
+            modal.find('#edit_card').attr('action', "/edit_card/" + card_id)
+        })
+        </script>
+        <!-------------------------------------------------------------- Edit Deck ------------------------------------------------------------->
+        <h2 class="m-3">Edit Deck</h2>
+        <div class="m-3">
+            <form action="/edit/{{deck.deck_id}}" method="post">
+                <div class="form-group">
+                    <label for="deck_name">Name</label>
+                    <input type="text" id="deck_name" name="deck_name" value="{{deck.name}}" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">Edit</button>
+            </form>
+        </div>
+    </body>
+</html>
