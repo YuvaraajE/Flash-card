@@ -1,0 +1,317 @@
+openapi: 3.0.0
+info:
+  title: Flash Card Open API Documentation
+  version: 1.0.0
+  description: |
+    <h2> Operations </h2>
+    <ul>
+      <li> Basic CRUD operations for cards and decks </li>
+      <li> Basic User information </li>
+     </ul>
+servers:
+  - url: http://192.168.182.6:8080/
+paths:
+  /api/deck/{deck_id}:
+    description: >-
+      End point to read, update and delete a deck resource with deck_id.
+    get:
+      description: Operation to get deck details
+      parameters:
+        - in: path
+          name: deck_id
+          required: true
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                title: deck object
+                type: object
+                properties:
+                  deck_id:
+                    type: integer
+                    example: 10
+                  name:
+                    type: string
+                    example: DBZ
+                  score:
+                    type: integer
+                    example: 7
+                  last_reviewed:
+                    type: string
+                    example: Fri, 26 Nov 2021 21:39:06 -0000
+        '404':
+          description: Deck not found.
+        '500':
+          description: Internal Server Error.
+    put:
+      description: Operation to update the deck detail
+      parameters:
+        - in: path
+          name: deck_id
+          required: true
+          schema:
+            type: integer
+            example: 10
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Dragon Ball Z
+      responses:
+        '200':
+          description: Successfuly updated.
+          content:
+            application/json:
+              schema:
+                title: deck object
+                type: object
+                properties:
+                  deck_id:
+                    type: integer
+                    example: 10
+                  name:
+                    type: string
+                    example: Dragon Ball Z
+                  score:
+                    type: integer
+                    example: 7
+                  last_reviewed:
+                    type: string
+                    example: Fri, 26 Nov 2021 21:39:06 -0000
+        '400':
+          description: Bad request.
+        '404':
+          description: Resource you requested to update not found
+        '500':
+          description: Internal Server Error
+    delete:
+      description: Operation to delete the deck.
+      parameters:
+        - in: path
+          name: deck_id
+          required: true
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: Successfully Deleted.
+        '404':
+          description: User does not exist.
+        '500':
+          description: Intenal Server Error.
+  /api/deck:
+    description: End point to create a deck.
+    post:
+      description: Operation to create the deck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: deck object
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: New Deck
+      responses:
+        '201':
+          description: Successfully Created.
+          content:
+            application/json:
+              schema:
+                title: deck object
+                type: object
+                properties:
+                  deck_id:
+                    type: integer
+                    example: 19
+                  name:
+                    type: string
+                    example: New Deck
+                  score:
+                    type: integer
+                    example: 0
+                  last_reviewed:
+                    type: string
+                    example: nul
+        '400':
+          description: Bad request.
+          
+  /api/card/{card_id}:
+    description: >-
+      End point to read, update and delete a card resource with card_id.
+    get:
+      description: Operation to get card details
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: integer
+            example: 11
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                title: card object
+                type: object
+                properties:
+                  card_id:
+                    type: integer
+                    example: 17
+                  front:
+                    type: string
+                    example: Jaco
+                  score:
+                    type: string
+                    example: Patrol
+        '404':
+          description: Card not found.
+        '500':
+          description: Internal Server Error.
+    put:
+      description: Operation to update the card detail
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: integer
+            example: 11
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                front:
+                  type: string
+                  example: Raditz
+                back:
+                  type: string
+                  example: Evil Saiyan
+      responses:
+        '200':
+          description: Successfuly updated.
+          content:
+            application/json:
+              schema:
+                title: card object
+                type: object
+                properties:
+                  card_id:
+                    type: integer
+                    example: 10
+                  front:
+                    type: string
+                    example: Raditz
+                  back:
+                    type: string
+                    example: Evil Saiyan
+        '400':
+          description: Bad request.
+        '404':
+          description: Resource you requested to update not found
+        '500':
+          description: Internal Server Error
+    delete:
+      description: Operation to delete the card.
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: integer
+            example: 34
+      responses:
+        '200':
+          description: Successfully Deleted.
+        '404':
+          description: Card does not exist.
+        '500':
+          description: Intenal Server Error.
+  /api/card:
+    description: End point to create a card.
+    post:
+      description: Operation to create the card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: card object
+              type: object
+              properties:
+                front:
+                  type: string
+                  example: Card front
+                back:
+                  type: string
+                  example: Card Back
+      responses:
+        '201':
+          description: Successfully Created.
+          content:
+            application/json:
+              schema:
+                title: card object
+                type: object
+                properties:
+                  card_id:
+                    type: integer
+                    example: 35
+                  front:
+                    type: string
+                    example: Card front
+                  back:
+                    type: string
+                    example: Card back
+        '400':
+          description: Bad request.
+  /api/user/{id}:
+    description: >-
+      End point to read, update and delete a card resource with card_id.
+    get:
+      description: Operation to get user details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                title: user object
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 4
+                  username:
+                    type: string
+                    example: Yuvaraaj E
+                  decks:
+                    type: array
+                    items:
+                      type: string
+                    example: [DBS, Dragon Ball Z]
+        '404':
+          description: Card not found.
+        '500':
+          description: Internal Server Error.
