@@ -9,7 +9,7 @@ info:
       <li> Basic User information </li>
      </ul>
 servers:
-  - url: http://192.168.182.6:8080/
+  - url: https://flash-card.yuvaraaje1.repl.co/
 paths:
   /api/deck/{deck_id}:
     description: >-
