@@ -185,7 +185,6 @@ class UserAPI(Resource):
             result["id"] = id
             result["username"] = user.username
             decks = db.session.query(User, Decks).join(UserDecks, UserDecks.user_id == User.id).join(Decks, Decks.deck_id == UserDecks.deck_id).all()
-            print(decks)
             deck_names = []
             for u, d in decks:
                 if u.id == id:
