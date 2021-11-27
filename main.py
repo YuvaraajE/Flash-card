@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemySessionUserDatastore
 from flask_security import UserMixin, RoleMixin
+from flask_cors import CORS
 
 # ----------------- Configurations --------------------------------
 
@@ -14,6 +15,8 @@ app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
 
 db = SQLAlchemy(app)
 db.init_app(app)
+# For COR problem in SwaggerUI
+CORS(app)
 
 # ----------------- Extending RegisterForm for register view ----------------------
 from flask_security import RegisterForm
